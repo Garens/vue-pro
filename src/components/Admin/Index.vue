@@ -48,9 +48,29 @@
     .ivu-col{
         transition: width .2s ease-in-out;
     }
+    .layout-ceiling{
+        background: #464c5b;
+        padding: 10px 0;
+        overflow: hidden;
+    }
+    .layout-ceiling-main{
+        float: right;
+        margin-right: 15px;
+    }
+    .layout-ceiling-main a{
+        color: #9ba7b5;
+    }
 </style>
 <template>
     <div class="layout" :class="{'layout-hide-text': spanLeft < 5}">
+      <div class="layout-ceiling">
+            <div class="layout-ceiling-main">
+                <a href="#">注册登录</a> |
+                <a href="#">帮助中心</a> |
+                <a href="#">安全中心</a> |
+                <a href="/admin/logout"><Icon type="log-out"></Icon></a>
+            </div>
+        </div>
         <Row type="flex">
             <i-col :span="spanLeft" class="layout-menu-left">
                 <Menu active-name="1" theme="dark" width="auto">
@@ -88,7 +108,7 @@
                     </div>
                 </div>
                 <div class="layout-copy">
-                    2011-2016 &copy; TalkingData
+                    2015-2017 &copy; Garens
                 </div>
             </i-col>
         </Row>
