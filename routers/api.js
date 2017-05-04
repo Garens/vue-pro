@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var model = require('../models/model.js');
+var User = require('../models/admin/user');
 
 
 router.get('/', function(req, res, next) {
@@ -8,8 +9,14 @@ router.get('/', function(req, res, next) {
   res.send({ title: 'pixi.js' });
 });
 
-router.get('/demo1', function(req, res, next) {
-  res.render('demo1', { title: 'demo1' });
+router.get('/login', function(req, res, next) {
+});
+
+router.post('/login', function(req, res, next) {
+  var params = req.body;
+  User.login(params,function(ret) {
+    res.send({flag: true, msg: '登录成功'});
+  })
 });
 
 

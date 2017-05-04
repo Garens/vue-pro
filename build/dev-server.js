@@ -12,6 +12,7 @@ var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf')
 var api = require('../routers/api')
+var bodyParser = require('body-parser')
 
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
@@ -55,7 +56,15 @@ app.use(require('connect-history-api-fallback')())
 // serve webpack bundle output
 app.use(devMiddleware)
 
-app.use('/api', api);
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+    limit:'50mb',
+    extended: true,
+    parameterLimit:50000
+}))
+
+app.use('/api', api)
 
 // enable hot-reload and state-preserving
 // compilation error display

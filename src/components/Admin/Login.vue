@@ -6,7 +6,7 @@
 
           <Form  ref="formInline" :model="formInline" :rules="ruleInline">
               <Form-item prop="user">
-                  <Input type="text" v-model="formInline.user" placeholder="Username">
+                  <Input type="text" v-model="formInline.name" placeholder="Username">
                       <Icon type="ios-person-outline" slot="prepend"></Icon>
                   </Input>
               </Form-item>
@@ -24,15 +24,19 @@
 
 </template>
 <script>
+    import { mapActions } from 'vuex'
+    import { USER_SIGNIN } from '@/store/user'
+    import axios from 'axios'
+
     export default {
         data () {
             return {
                 formInline: {
-                    user: '',
+                    name: '',
                     password: ''
                 },
                 ruleInline: {
-                    user: [
+                    name: [
                         { required: true, message: '请填写用户名', trigger: 'blur' }
                     ],
                     password: [
@@ -43,11 +47,19 @@
             }
         },
         methods: {
+            ...mapActions([USER_SIGNIN]),
             handleSubmit(name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.$Message.success('提交成功!');
-                        console.log(this.formInline);
+                      axios.post('/api/login',this.formInline).then(ret => {
+                        if(ret.data.flag) {
+                          this.$Message.success('登录成功!');
+                          this.USER_SIGNIN(this.formInline);
+                          this.$router.replace({ path: '/admin' });
+                        }else {
+                          this.$Message.error(ret.data.msg);
+                        }
+                      });
                     } else {
                         this.$Message.error('表单验证失败!');
                     }
