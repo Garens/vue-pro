@@ -4,6 +4,8 @@ import Layer from '@/components/Layer'
 import Admin from '@/components/Admin/Index'
 import Login from '@/components/Admin/Login'
 import User from '@/components/Admin/User'
+import Sort from '@/components/Admin/Sort'
+
 
 export default [
     {
@@ -25,26 +27,27 @@ export default [
       component: Login
     },
     {
-      path: '/admin/user',
-      name: 'user',
-      meta: {
-        title: '用户列表',
-        // 添加该字段，表示进入这个路由是需要登录的
-        requireAuth: true,
-      },
-      component: User
-    },
-    {
       path: '/admin',
       name: 'Admin',
       meta: {
-        title: '管理首页',
-        // 添加该字段，表示进入这个路由是需要登录的
-        requireAuth: true,
+        title: '管理首页'
       },
-      components: {
-        default: Admin,
-        user: User
-      }
+      component: Admin,
+      children: [
+        {
+          path: 'user',
+          meta: {
+            title: '用户列表'
+          },
+          component: User
+        },
+        {
+          path: 'sort',
+          meta: {
+            title: '文章分类'
+          },
+          component: Sort
+        }
+      ]
     }
   ]
