@@ -1,71 +1,86 @@
 <template>
-    <Table border :context="self" :columns="columns7" :data="data6"></Table>
+  <div class="">
+    <div class="btn-add">
+      <Button type="primary">添加</Button>
+    </div>
+    <user-table :tableCol="tableCol" :tableData="tableData" v-on:show="show" v-on:remove="remove"></user-table>
+  </div>
 </template>
 <script>
+  import userTable from './Table.vue'
+  import axios from 'axios'
+
     export default {
+        components: {
+          userTable
+        },
         data () {
             return {
-                self: this,
-                columns7: [
-                    {
-                        title: '姓名',
-                        key: 'name',
-                        render (row, column, index) {
-                            return `<Icon type="person"></Icon> <strong>${row.name}</strong>`;
-                        }
-                    },
-                    {
-                        title: '年龄',
-                        key: 'age'
-                    },
-                    {
-                        title: '地址',
-                        key: 'address'
-                    },
-                    {
-                        title: '操作',
-                        key: 'action',
-                        width: 150,
-                        align: 'center',
-                        render (row, column, index) {
-                            return `<i-button type="primary" size="small" @click="show(${index})">查看</i-button> <i-button type="error" size="small" @click="remove(${index})">删除</i-button>`;
-                        }
+              tableCol: [
+                {
+                    title: '用户名',
+                    key: 'username'
+                },
+                {
+                    title: '昵称',
+                    key: 'nickname'
+                },
+                {
+                    title: '角色',
+                    key: 'role',
+                    render (row, column, index) {
+                      return row.role == 'admin' ? '管理者' : '作者';
                     }
-                ],
-                data6: [
-                    {
-                        name: '王小明',
-                        age: 18,
-                        address: '北京市朝阳区芍药居'
-                    },
-                    {
-                        name: '张小刚',
-                        age: 25,
-                        address: '北京市海淀区西二旗'
-                    },
-                    {
-                        name: '李小红',
-                        age: 30,
-                        address: '上海市浦东新区世纪大道'
-                    },
-                    {
-                        name: '周小伟',
-                        age: 26,
-                        address: '深圳市南山区深南大道'
+                },
+                {
+                    title: '邮箱',
+                    key: 'email'
+                },
+                {
+                    title: '描述',
+                    key: 'description'
+                },
+                {
+                    title: '操作',
+                    key: 'action',
+                    width: 150,
+                    align: 'center',
+                    render (row, column, index) {
+                        return `<i-button type="primary" size="small" @click="emitEvent('show',${index})">查看</i-button> <i-button type="error" size="small" @click="emitEvent('remove', ${index})">删除</i-button>`;
                     }
-                ]
+                }
+              ],
+              tableData: [
+
+              ]
             }
         },
+        mounted () {
+          this.getUserList();
+        },
         methods: {
-            show (index) {
-                this.$Modal.info({
-                    title: '用户信息',
-                    content: `姓名：${this.data6[index].name}<br>年龄：${this.data6[index].age}<br>地址：${this.data6[index].address}`
-                })
-            },
-            remove (index) {
-                this.data6.splice(index, 1);
-            }
+          getUserList () {
+            axios.get('/api/getUserList').then( ret => {
+              if(ret.data.flag) {
+                this.tableData = ret.data.data;
+              }
+            })
+          },
+          show (index) {
+              this.$Modal.info({
+                  title: '用户信息',
+                  content: `姓名：${this.tableData[index].username}<br>年龄：${this.tableData[index].age}<br>地址：${this.tableData[index].address}`
+              })
+          },
+          remove (index) {
+              this.tableData.splice(index, 1);
+          }
         }
     }
 </script>
+<style>
+  .btn-add {
+    padding: 5px 10px;
+    text-align: right;
+  }
+</style>

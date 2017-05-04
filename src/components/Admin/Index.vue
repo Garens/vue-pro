@@ -26,9 +26,8 @@
                 </div>
                 <div class="layout-breadcrumb">
                     <Breadcrumb>
-                        <Breadcrumb-item href="#">首页</Breadcrumb-item>
-                        <Breadcrumb-item href="#">应用中心</Breadcrumb-item>
-                        <Breadcrumb-item>某应用</Breadcrumb-item>
+                        <Breadcrumb-item href="/admin">首页</Breadcrumb-item>
+                        <Breadcrumb-item>{{ breadName }}</Breadcrumb-item>
                     </Breadcrumb>
                 </div>
                 <div class="layout-content">
@@ -55,8 +54,16 @@
                 spanLeft: 3,
                 spanRight: 21,
                 menuItem: [],
+                breadName: '',
                 menuStyle: {height: (window.innerHeight-40) + 'px'}
             }
+        },
+        created () {
+          this.findPath();
+        },
+        watch: {
+          // 如果路由有变化，会再次执行该方法
+          '$route': 'findPath'
         },
         mounted () {
           this.menuItem = menuItem.admin;
@@ -69,6 +76,11 @@
             ...mapState({ user: state => state.user })
         },
         methods: {
+          findPath () {
+            let title = window.document.title.split('-')[0];
+            // let path = this.$route.path.split("/");
+            this.breadName = title;
+          },
           onResizeWindow() {
             var _this = this;
             window.onresize = function() {
@@ -140,6 +152,9 @@
         text-align: center;
         padding: 10px 0 20px;
         color: #9ea7b4;
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
     }
     .layout-menu-left{
         background: #464c5b;

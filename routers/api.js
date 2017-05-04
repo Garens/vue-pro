@@ -9,6 +9,12 @@ router.get('/', function(req, res, next) {
   res.send({ title: 'pixi.js' });
 });
 
+router.get('/getUserList', function(req, res) {
+  User.getUserList(function(ret) {
+    res.send(ret);
+  })
+})
+
 router.get('/login', function(req, res, next) {
 });
 

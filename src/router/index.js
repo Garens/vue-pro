@@ -1,5 +1,5 @@
 
-import Hello from '@/components/Hello'
+import Home from '@/components/admin/Home'
 import Layer from '@/components/Layer'
 import Admin from '@/components/Admin/Index'
 import Login from '@/components/Admin/Login'
@@ -8,11 +8,6 @@ import Sort from '@/components/Admin/Sort'
 
 
 export default [
-    {
-      path: '/',
-      name: 'Hello',
-      component: Admin
-    },
     {
       path: '/home',
       name: 'Layer',
@@ -34,6 +29,13 @@ export default [
       },
       component: Admin,
       children: [
+        {
+          path: '/',
+          meta: {
+            title: '管理首页'
+          },
+          component: Home
+        },
         {
           path: 'user',
           meta: {
