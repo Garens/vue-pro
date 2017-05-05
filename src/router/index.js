@@ -5,6 +5,8 @@ import Admin from '@/components/Admin/Index'
 import Login from '@/components/Admin/Login'
 import User from '@/components/Admin/User'
 import Sort from '@/components/Admin/Sort'
+import Article from '@/components/Admin/Article'
+import Write from '@/components/Admin/Write'
 
 
 export default [
@@ -49,6 +51,21 @@ export default [
             title: '文章分类'
           },
           component: Sort
+        },
+        {
+          path: 'log_list',
+          meta: {
+            title: '文章列表'
+          },
+          component: Article
+        },
+
+        {
+          path: 'write_log',
+          meta: {
+            title: '写文章'
+          },
+          component: Write
         }
       ]
     }

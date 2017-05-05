@@ -2,6 +2,20 @@
 var gmodel = require('../model');
 
 
+//获取文章列表
+exports.getArticleList = function(callback) {
+  gmodel.Article.findAll({
+    include:[
+      {model: gmodel.Blog, as: 'blog'}
+    ],
+    order: [['sid', 'ASC']]
+  }).then(function(ret) {
+    callback({flag: true, data: ret});
+  }).catch(function(err) {
+    callback({flag: false, msg: '获取列表失败'});
+  });
+}
+
 //删除分类
 exports.delSort = function(params, callback) {
   if(!params.sid) {
@@ -31,7 +45,7 @@ exports.upsertSort = function(params, callback) {
   });
 }
 
-//获取文章分类
+//获取文章分类列表
 exports.getSortList = function(callback) {
   gmodel.Sort.findAll({
     include:[

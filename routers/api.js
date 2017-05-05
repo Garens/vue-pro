@@ -10,6 +10,13 @@ router.get('/', function(req, res, next) {
   res.send({ title: 'pixi.js' });
 });
 
+//获取文章列表
+router.get('/getArticleList', function(req, res) {
+  Article.getArticleList(function(ret) {
+    res.send(ret);
+  })
+})
+
 //删除分类
 router.post('/delSort', function(req, res) {
   var params = req.body;
