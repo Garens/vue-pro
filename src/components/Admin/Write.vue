@@ -1,18 +1,24 @@
 <template>
   <div class="">
-    <Form :model="formItem"  :label-width="60">
-      <Form-item label="标题">
-          <Input v-model="formItem.input" placeholder="请输入标题..."></Input>
-      </Form-item>
-      <Form-item label="内容">
+    <Row>
+      <Col span="2">标题</Col>
+      <Col span="22">
+        <Input v-model="formItem.input" placeholder="请输入标题..."></Input>
+      </Col>
+    </Row>
+    <Row>
+      <Col span="2">内容</Col>
+      <Col span="22">
         <vue-markdown :style="style" @save="submitEdit" :value="contentValue">
         </vue-markdown>
-      </Form-item>
-
-      <Form-item label="标签">
-          <Input v-model="formItem.type" placeholder="请输入"></Input>
-      </Form-item>
-    </Form>
+      </Col>
+    </Row>
+    <Row>
+      <Col span="2">标题</Col>
+      <Col span="22">
+        <Input v-model="formItem.type" placeholder="请输入"></Input>
+      </Col>
+    </Row>
   </div>
 </template>
 <script>
