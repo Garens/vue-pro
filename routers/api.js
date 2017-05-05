@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var model = require('../models/model.js');
 var User = require('../models/admin/user');
+var Article = require('../models/admin/article');
 
 
 router.get('/', function(req, res, next) {
@@ -9,6 +10,30 @@ router.get('/', function(req, res, next) {
   res.send({ title: 'pixi.js' });
 });
 
+//删除分类
+router.post('/delSort', function(req, res) {
+  var params = req.body;
+  Article.delSort(params, function(ret) {
+    res.send(ret);
+  })
+})
+
+//添加、修改文章分类
+router.post('/upsertSort', function(req, res) {
+  var params = req.body;
+  Article.upsertSort(params, function(ret) {
+    res.send(ret);
+  })
+})
+
+//获取文章分类列表
+router.get('/getSortList', function(req, res) {
+  Article.getSortList(function(ret) {
+    res.send(ret);
+  })
+})
+
+// 获取用户列表
 router.get('/getUserList', function(req, res) {
   User.getUserList(function(ret) {
     res.send(ret);

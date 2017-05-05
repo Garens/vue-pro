@@ -5,13 +5,13 @@
           <h2>Login</h2>
 
           <Form  ref="formInline" :model="formInline" :rules="ruleInline">
-              <Form-item prop="user">
-                  <Input type="text" v-model="formInline.name" placeholder="Username">
+              <Form-item prop="name">
+                  <Input type="text" ref="username" v-model="formInline.name" placeholder="Username">
                       <Icon type="ios-person-outline" slot="prepend"></Icon>
                   </Input>
               </Form-item>
               <Form-item prop="password">
-                  <Input type="password" v-model="formInline.password" placeholder="Password">
+                  <Input type="password" v-model="formInline.password" placeholder="Password" @on-enter="handleSubmit('formInline')">
                       <Icon type="ios-locked-outline" slot="prepend"></Icon>
                   </Input>
               </Form-item>
@@ -45,6 +45,10 @@
                     ]
                 }
             }
+        },
+        mounted () {
+          // console.log(this.$refs.username.$el);
+          // this.$refs.username.$el.lastElementChild.focus();
         },
         methods: {
             ...mapActions([USER_SIGNIN]),
