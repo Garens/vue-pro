@@ -48,9 +48,9 @@ exports.upsertSort = function(params, callback) {
 //获取文章分类列表
 exports.getSortList = function(callback) {
   gmodel.Sort.findAll({
-    include:[
-      {model: gmodel.Blog, as: 'blog'}
-    ],
+    // include:[
+    //   {model: gmodel.Blog, as: 'blog'}
+    // ],
     order: [['sid', 'ASC']]
   }).then(function(ret) {
     callback({flag: true, data: ret});

@@ -12,7 +12,7 @@
             <i-col :span="spanLeft" class="layout-menu-left" :style="menuStyle">
                 <Menu active-name="1" theme="dark" width="auto" @on-select="selectMenu">
                     <div class="layout-logo-left"></div>
-                    <Menu-item v-for="(item,index) in menuItem" :name="item.name">
+                    <Menu-item v-for="(item,index) in menuItem" :name="item.name" :key="menuItem">
                         <Icon :type="item.icon" :size="iconSize" :title="item.text"></Icon>
                         <span class="layout-text">{{item.text}}</span>
                     </Menu-item>

@@ -94,7 +94,7 @@
                     title: '文章',
                     key: 'blog',
                     render (row, column, index) {
-                      return row.blog.length;
+                      return 0;//row.blog.length;
                     }
                 },
                 {
@@ -198,7 +198,7 @@
                   })
                 },
                 onCancel: () => {
-                    
+
                 }
             });
 
