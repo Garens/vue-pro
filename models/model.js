@@ -13,16 +13,18 @@ var sort = require('./table_models/e_sort');
 var article = require('./table_models/e_blog');
 var comm = require('./table_models/e_comment');
 
-
+var User = user(sequelize,Sequelize);
 var Sort = sort(sequelize,Sequelize);
 var Article = article(sequelize,Sequelize);
 var Comm = comm(sequelize,Sequelize);
 
+Article.belongsTo(User, {foreignKey: 'author', as: 'user'});
 Article.belongsTo(Sort, {foreignKey: 'sortid', as: 'sort'});
 Article.hasMany(Comm, {foreignKey: 'gid', targetKey: 'gid', as: 'comm'});
 Sort.hasMany(Article, {foreignKey: 'sortid', targetKey: 'sortid', as: 'article'});
 
 
-exports.User = user(sequelize,Sequelize);
+exports.User = User;
 exports.Article = Article;
 exports.Sort = Sort;
+exports.Comm = Comm;

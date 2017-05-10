@@ -2,17 +2,40 @@
 var gmodel = require('../model');
 
 
+//保存文章
+exports.saveBlog = function(params, callback) {
+  var blog = params.blog;
+  if(!blog && typeof(blog) !== 'object') {
+    return callback({flag: false, msg: '传入的数据格式错误'});
+  }
+  blog.top = blog.top ? 'y' : 'n';
+  blog.sortop = blog.sortop ? 'y' : 'n';
+  blog.allow_remark = blog.allow_remark ? 'y' : 'n';
+  blog.date = (Date.parse(new Date()))/1000;
+  blog.author = 1;
+  blog.type = 'blog';
+  gmodel.Article.upsert(blog).then(function(ret) {
+    callback({flag: true, data: ret});
+  }).catch(function(err) {
+    console.log('error1:' + err);
+    callback({flag: false, msg: '数据库操作失败', err: err});
+  })
+}
+
 //获取文章列表
 exports.getArticleList = function(callback) {
   gmodel.Article.findAll({
     include:[
-      {model: gmodel.Blog, as: 'blog'}
+      {model: gmodel.Sort, as: 'sort'},
+      {model: gmodel.User, as: 'user'},
+      {model: gmodel.Comm, as: 'comm'}
     ],
-    order: [['sid', 'ASC']]
+    order: [['gid', 'DESC']]
   }).then(function(ret) {
     callback({flag: true, data: ret});
   }).catch(function(err) {
-    callback({flag: false, msg: '获取列表失败'});
+    console.log('ERROR2:' + err);
+    callback({flag: false, msg: '获取列表失败', err: err});
   });
 }
 
@@ -41,7 +64,7 @@ exports.upsertSort = function(params, callback) {
   gmodel.Sort.upsert(params).then(function(ret) {
     callback({flag: true, data: ret});
   }).catch(function(err) {
-    callback({flag: false, msg: '添加分类失败'});
+    callback({flag: false, msg: '数据库操作失败', err: err});
   });
 }
 

@@ -10,6 +10,14 @@ router.get('/', function(req, res, next) {
   res.send({ title: 'pixi.js' });
 });
 
+//保存文章
+router.post('/saveBlog', function(req, res) {
+  var params = req.body;
+  Article.saveBlog(params, function(ret) {
+    res.send(ret);
+  })
+})
+
 //获取文章列表
 router.get('/getArticleList', function(req, res) {
   Article.getArticleList(function(ret) {

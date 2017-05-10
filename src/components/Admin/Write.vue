@@ -16,28 +16,28 @@
     <Row class="write-row">
       <Col span="2" class="write-title">分类</Col>
       <Col span="7">
-        <Select v-model="formItem.sort" placeholder="请选择分类...">
+        <Select v-model="formItem.sortid" placeholder="请选择分类...">
             <Option value="-1" :key="-1"> 无 </Option>
             <Option v-for="item in selectData" :value="item.sid" :key="item.sid">{{ item.sortname }}</Option>
         </Select>
       </Col>
       <Col span="5" class="write-title">
         首页置顶
-        <i-switch v-model="formItem.isTop" size="large">
+        <i-switch v-model="formItem.top" size="large">
             <span slot="open">是</span>
             <span slot="close">否</span>
         </i-switch>
       </Col>
       <Col span="5" class="write-title">
         分类置顶
-        <i-switch v-model="formItem.sortTop" size="large">
+        <i-switch v-model="formItem.sortop" size="large">
             <span slot="open">是</span>
             <span slot="close">否</span>
         </i-switch>
       </Col>
       <Col span="5" class="write-title">
         允许评论
-        <i-switch v-model="formItem.isComment" size="large">
+        <i-switch v-model="formItem.allow_remark" size="large">
             <span slot="open">是</span>
             <span slot="close">否</span>
         </i-switch>
@@ -80,6 +80,9 @@
   // import VueMarkdown from 'vue-markdown'
   import { mavonEditor } from 'mavon-editor'
 
+  import { mapActions,mapState } from 'vuex'
+  import { USER_SIGNOUT } from '@/store/user'
+
     export default {
         components: {
           'vue-markdown': mavonEditor
@@ -94,14 +97,14 @@
               style: {
                 height: "500px"
               },
-              contentValue: '<p>ssasa</p>',
+              contentValue: '',
               htmlcode: '',
               formItem: {
-                sort: 0,
+                sortid: 0,
                 excerpt: '',
-                isComment: false,
-                sortTop: false,
-                isTop: true
+                allow_remark: false,
+                sortop: false,
+                top: true
               }
             }
         },
@@ -111,6 +114,9 @@
             this.getSortList();
           });
 
+        },
+        computed: {
+            ...mapState({ user: state => state.user })
         },
         methods: {
           //添加标签到列表
@@ -137,9 +143,12 @@
           },
           //发表文章点击方法
           saveBlog () {
-            console.log(this.tagList);
-            console.log(this.formItem);
-            console.log(this.htmlcode);
+            this.formItem.content = this.contentValue;
+            let params = {blog: this.formItem, tags: this.tagList};
+            console.log(params);
+            axios.post('/api/saveBlog', params).then( ret => {
+              console.log(ret);
+            })
           },
           //获取分类列表方法
           getSortList () {
@@ -171,6 +180,7 @@
             };
           },
           submitEdit (cont, html) {
+            this.contentValue = cont;
             this.htmlcode = html;
           },
           edit (index) {

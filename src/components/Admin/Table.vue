@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <Table :columns="tableCol" :data="tableData"></Table>
+    <Table :columns="tableCol" :height="height" :data="tableData"></Table>
   </div>
 </template>
 <script>
@@ -9,7 +9,7 @@
             return {
             }
         },
-        props: ['tableCol', 'tableData'],
+        props: ['tableCol', 'tableData', 'height'],
         methods: {
           emitEvent (type, item) {
             this.$emit(type, item);

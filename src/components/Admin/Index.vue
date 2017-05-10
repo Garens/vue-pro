@@ -31,7 +31,7 @@
                     </Breadcrumb>
                 </div>
                 <div class="layout-content">
-                    <div class="layout-content-main">
+                    <div class="layout-content-main" :style="contStyle">
                       <router-view></router-view>
                     </div>
                 </div>
@@ -55,7 +55,8 @@
                 spanRight: 21,
                 menuItem: [],
                 breadName: '',
-                menuStyle: {height: (window.innerHeight-40) + 'px'}
+                menuStyle: {},
+                contStyle: {}
             }
         },
         created () {
@@ -67,6 +68,7 @@
         },
         mounted () {
           this.menuItem = menuItem.admin;
+          this.setWindSize();
           this.onResizeWindow();
         },
         computed: {
@@ -81,10 +83,14 @@
             // let path = this.$route.path.split("/");
             this.breadName = title;
           },
+          setWindSize () {
+            this.menuStyle = {height: (window.innerHeight - 40) +'px'};
+            this.contStyle = {height: (window.innerHeight - 200) + 'px'};
+          },
           onResizeWindow() {
             var _this = this;
             window.onresize = function() {
-              _this.menuStyle.height = (window.innerHeight-40) +'px';
+              _this.setWindSize();
             }
           },
           getMenuItem () {
@@ -152,6 +158,8 @@
         text-align: center;
         padding: 10px 0 20px;
         color: #9ea7b4;
+        background-color: #f5f7f9;
+        border-top: 1px solid #d7dde4;
         position: absolute;
         bottom: 0px;
         width: 100%;
@@ -191,5 +199,8 @@
     }
     .layout-ceiling-main a{
         color: #9ba7b5;
+    }
+    .layout-content-main {
+      overflow: auto;
     }
 </style>

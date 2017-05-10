@@ -1,7 +1,10 @@
 <template>
   <div class="">
-    <sort-table :tableCol="tableCol" :tableData="tableData" v-on:edit="edit" v-on:remove="remove"></sort-table>
+    <sort-table :tableCol="tableCol" :height="600" :tableData="tableData" v-on:edit="edit" v-on:remove="remove"></sort-table>
 
+    <p class="page-bar">
+      <Page :total="pageTotal" :page-size="pageSize" :current="currentPage" size="small" show-elevator show-sizer class-name="page-cont"></Page>
+    </p>
   </div>
 </template>
 <script>
@@ -15,6 +18,9 @@
         },
         data () {
             return {
+              pageSize: 10,
+              pageTotal: 40,
+              currentPage: 2,
               ruleValidate: validate,
               selectData: [],
               formItem: {
@@ -38,19 +44,41 @@
                 },
                 {
                     title: '作者',
-                    key: 'author'
+                    key: 'author',
+                    render (row, column, index) {
+                      let name = '无作者';
+                      if(row.user.nickname) {
+                        name = row.user.nickname;
+                      } else {
+                        name = row.user.username;
+                      }
+                      return name;
+                    }
                 },
                 {
                     title: '分类',
-                    key: 'sortid'
+                    key: 'sortid',
+                    render (row, column, index) {
+                      if(row.sort) {
+                        return row.sort.sortname;
+                      } else {
+                        return '无分类';
+                      }
+                    }
                 },
                 {
                     title: '时间',
-                    key: 'date'
+                    key: 'date',
+                    render (row, column, index) {
+                      return new Date(parseInt(row.date) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');
+                    }
                 },
                 {
                     title: '评论',
-                    key: 'coment'
+                    key: 'coment',
+                    render (row, column, index) {
+                      return row.comm.length;
+                    }
                 },
                 {
                     title: '阅读',
@@ -98,25 +126,12 @@
             };
           },
           getSortList () {
-            axios.get('/api/getSortList').then( ret => {
+            axios.get('/api/getArticleList').then( ret => {
+              console.log(ret);
               if(ret.data.flag) {
                 var list = ret.data.data;
-                let _arr = [], arr = [];
-                list.forEach(item => {
-                  if(item.pid == 0) {
-                    _arr.push(item);
-                  }
-                });
-                this.selectData = _arr; //设置下拉为pid为0的列表
-                _arr.forEach(item => {
-                  arr.push(item);
-                  list.forEach(_item => {
-                    if(_item.pid == item.sid) {
-                      arr.push(_item);
-                    }
-                  })
-                })
-                this.tableData = arr;
+                this.tableData = list;
+
               } else {
                 this.$Message.info(ret.data.msg);
               }
@@ -167,6 +182,13 @@
     }
 </script>
 <style>
+  .page-cont {
+    display: inline-block;
+  }
+  .page-bar {
+    padding: 20px;
+    text-align: right;
+  }
   .btn-add {
     padding: 5px 10px;
     text-align: right;
