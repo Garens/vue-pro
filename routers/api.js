@@ -18,9 +18,18 @@ router.post('/saveBlog', function(req, res) {
   })
 })
 
+//删除文章
+router.post('/delArticle', function(req, res) {
+  var params = req.body;
+  Article.delArticle(params, function(ret) {
+    res.send(ret);
+  })
+})
+
 //获取文章列表
 router.get('/getArticleList', function(req, res) {
-  Article.getArticleList(function(ret) {
+  var params = req.query;
+  Article.getArticleList(params, function(ret) {
     res.send(ret);
   })
 })

@@ -9,7 +9,7 @@
     <Row class="write-row">
       <Col span="2" class="write-title">内容</Col>
       <Col span="22">
-        <vue-markdown :style="style" @change="submitEdit" v-model="contentValue">
+        <vue-markdown :style="style" @change="changeMarkdown" v-model="contentValue">
         </vue-markdown>
       </Col>
     </Row>
@@ -69,6 +69,7 @@
     </Row>
     <Row class="write-row">
       <Col span="24" class="form-bootom">
+        <Button type="primary" @click="saveToStore">保存预览</Button>
         <Button type="primary" @click="saveBlog">发表文章</Button>
       </Col>
     </Row>
@@ -80,8 +81,8 @@
   // import VueMarkdown from 'vue-markdown'
   import { mavonEditor } from 'mavon-editor'
 
-  import { mapActions,mapState } from 'vuex'
-  import { USER_SIGNOUT } from '@/store/user'
+  import { mapActions, mapState, mapGetters } from 'vuex'
+  import { USER_SIGNOUT } from '@/store/modules/user'
 
     export default {
         components: {
@@ -97,28 +98,49 @@
               style: {
                 height: "500px"
               },
-              contentValue: '',
-              htmlcode: '',
               formItem: {
+                title: '',
+                content: '',
                 sortid: 0,
                 excerpt: '',
                 allow_remark: false,
                 sortop: false,
                 top: true
-              }
+              },
+              contentValue: 'test'
             }
+        },
+        created () {
+          // this.getEditArticleData();
         },
         mounted () {
           this.$nextTick(function () {
             this.ruleValidate = validate;
             this.getSortList();
+            console.log(this.articleItem);
+            this.getEditArticleData();
           });
-
         },
         computed: {
-            ...mapState({ user: state => state.user })
+            ...mapGetters({
+              articleItem: 'edittingArticle'
+            }),
+            ...mapState({
+              user: state => state.user,
+              article: state => state.article
+            })
         },
         methods: {
+          ...mapActions([
+            'addToStore'
+          ]),
+          //读取正在编辑的文章信息
+          getEditArticleData () {
+            if(this.articleItem) {
+              this.contentValue = this.articleItem.content;
+              this.formItem = this.articleItem;
+            }            
+          },
           //添加标签到列表
           handleInputConfirm () {
             let inputValue = this.tagInput;
@@ -168,47 +190,32 @@
               }
             })
           },
-          addSort () {
-            this.modalTitle = '添加分类';
-            this.editModal = true;
-            this.formItem = {
-                sortname: '',
-                alias: '',
-                taxis: 10,
-                select: '',
-                description: ''
-            };
-          },
-          submitEdit (cont, html) {
+          //当编辑器内容改变时
+          changeMarkdown (cont) {
             this.contentValue = cont;
-            this.htmlcode = html;
+            this.setFormItemData('content', cont);
+            this.saveToStore();
           },
-          edit (index) {
-              this.editModal = true;
-              var item = this.tableData[index];
-              this.formItem = item;
+          //动态设置formitem的数据
+          setFormItemData (key, val) {
+            if(typeof(key) === 'string') {
+              this.formItem[key] = val;
+            }
           },
-          remove (index) {
-            this.$Modal.confirm({
-                title: '提示',
-                content: '<p>确认删除此分类?</p>',
-                onOk: () => {
-                  var item = this.tableData[index];
-                  axios.post('/api/delSort', item).then(ret => {
-                    if(ret.data.flag) {
-                      this.editModal = false;
-                      this.getSortList();
-                    } else {
-                      this.$Message.info(ret.data.msg);
-                    }
-                  })
-                },
-                onCancel: () => {
-
-                }
-            });
-
-
+          saveToStore () {
+            let item = {
+              title: this.formItem.title,
+              content: this.formItem.content,
+              sortid: this.formItem.sortid,
+              excerpt: this.formItem.excerpt,
+              allow_remark: this.formItem.allow_remark,
+              sortop: this.formItem.sortop,
+              top: this.formItem.top
+            }
+            this.addToStore(item);
+            // console.log(this.article);
+            // this.EDIT_ARTICLE(this.formItem);
+            // this.$store.dispatch('EDIT_ARTICLE', this.formItem);
           }
         }
     }

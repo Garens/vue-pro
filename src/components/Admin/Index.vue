@@ -45,7 +45,7 @@
 <script>
     import axios from 'axios'
     import { mapActions,mapState } from 'vuex'
-    import { USER_SIGNOUT } from '@/store/user'
+    import { USER_SIGNOUT } from '@/store/modules/user'
     import menuItem from './menuItem'
 
     export default {

@@ -1,16 +1,29 @@
 <template>
   <div class="">
-    <sort-table :tableCol="tableCol" :height="600" :tableData="tableData" v-on:edit="edit" v-on:remove="remove"></sort-table>
+    <sort-table :tableCol="tableCol" :height="521" :tableData="tableData" v-on:edit="edit" v-on:remove="remove"></sort-table>
 
     <p class="page-bar">
-      <Page :total="pageTotal" :page-size="pageSize" :current="currentPage" size="small" show-elevator show-sizer class-name="page-cont"></Page>
+      <Page
+        :total="pageTotal"
+        :page-size="pageSize"
+        :page-size-opts="pageSizeOpts"
+        :current="currentPage"
+        @on-change="changePage"
+        @on-page-size-change="changePageSize"
+        size="small"
+        show-total
+        show-elevator
+        show-sizer
+        class-name="page-cont"
+        >
+        </Page>
     </p>
   </div>
 </template>
 <script>
   import sortTable from './Table.vue'
   import axios from 'axios'
-  import validate from '@/libs/validate.js'
+  import { mapActions,mapState } from 'vuex'
 
     export default {
         components: {
@@ -19,9 +32,9 @@
         data () {
             return {
               pageSize: 10,
+              pageSizeOpts: [10, 20, 30, 40, 50],
               pageTotal: 40,
-              currentPage: 2,
-              ruleValidate: validate,
+              currentPage: 1,
               selectData: [],
               formItem: {
                   gid: '',
@@ -108,12 +121,21 @@
         },
         mounted () {
           this.$nextTick(function () {
-            this.ruleValidate = validate;
-            this.getSortList();
+            this.getArticleList();
           });
-
         },
         methods: {
+          ...mapActions([
+            'addToStore'
+          ]),
+          changePageSize (num) {
+            this.pageSize = num;
+            this.getArticleList();
+          },
+          changePage (num) {
+            this.currentPage = num;
+            this.getArticleList();
+          },
           addSort () {
             this.modalTitle = '添加分类';
             this.editModal = true;
@@ -125,47 +147,32 @@
                 description: ''
             };
           },
-          getSortList () {
-            axios.get('/api/getArticleList').then( ret => {
-              console.log(ret);
-              if(ret.data.flag) {
-                var list = ret.data.data;
-                this.tableData = list;
+          getArticleList () {
+            axios.get('/api/getArticleList', {params: {currentPage: this.currentPage, pageSize: this.pageSize}}).then( ret => {
 
-              } else {
-                this.$Message.info(ret.data.msg);
-              }
-            })
-          },
-          cancelEdit () {
-            this.getSortList();
-          },
-          submitEdit () {
-            let params = this.formItem;
-            axios.post('/api/upsertSort', params).then(ret => {
               if(ret.data.flag) {
-                this.editModal = false;
-                this.getSortList();
+                var list = ret.data.data.rows;
+                this.tableData = list;
+                this.pageTotal = ret.data.data.count;
               } else {
                 this.$Message.info(ret.data.msg);
               }
             })
           },
           edit (index) {
-              this.editModal = true;
               var item = this.tableData[index];
-              this.formItem = item;
+              this.addToStore(item);
+              this.$router.replace({ path: '/admin/write_log' });
           },
           remove (index) {
             this.$Modal.confirm({
                 title: '提示',
-                content: '<p>确认删除此分类?</p>',
+                content: '<p>确认删除此文章?</p>',
                 onOk: () => {
                   var item = this.tableData[index];
-                  axios.post('/api/delSort', item).then(ret => {
+                  axios.post('/api/delArticle', item).then(ret => {
                     if(ret.data.flag) {
-                      this.editModal = false;
-                      this.getSortList();
+                      this.getArticleList();
                     } else {
                       this.$Message.info(ret.data.msg);
                     }
@@ -175,8 +182,6 @@
 
                 }
             });
-
-
           }
         }
     }

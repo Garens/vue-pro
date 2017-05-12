@@ -25,7 +25,7 @@
 </template>
 <script>
     import { mapActions } from 'vuex'
-    import { USER_SIGNIN } from '@/store/user'
+    import { USER_SIGNIN } from '@/store/modules/user'
     import axios from 'axios'
 
     export default {

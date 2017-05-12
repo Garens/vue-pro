@@ -1,6 +1,22 @@
 
 var gmodel = require('../model');
 
+//删除文章
+exports.delArticle = function(params, callback) {
+  if(!params.gid) {
+    return callback({flag: false, msg: '传入的数据格式错误'});
+  }
+
+  gmodel.Article.destroy({
+    where: {
+      gid : params.gid
+    }
+  }).then(function(ret) {
+    callback({flag: true, msg: '删除成功'});
+  }).catch(function(err) {
+    callback({flag: false, msg: '删除失败'});
+  })
+}
 
 //保存文章
 exports.saveBlog = function(params, callback) {
@@ -23,13 +39,23 @@ exports.saveBlog = function(params, callback) {
 }
 
 //获取文章列表
-exports.getArticleList = function(callback) {
-  gmodel.Article.findAll({
+exports.getArticleList = function(params, callback) {
+  var pageSize = params.pageSize || 10;
+  var currentPage = params.currentPage || 1;
+  var offset = parseInt(pageSize) * (parseInt(currentPage)-1);
+  gmodel.Article.findAndCountAll({
+    where: {
+      type: 'blog',
+      hide: 'n'
+    },
+    offset:offset,
+    limit:parseInt(pageSize),
     include:[
-      {model: gmodel.Sort, as: 'sort'},
-      {model: gmodel.User, as: 'user'},
-      {model: gmodel.Comm, as: 'comm'}
+      {model: gmodel.Sort, as: 'sort', required: false},
+      {model: gmodel.User, as: 'user', required: false},
+      {model: gmodel.Comm, as: 'comm', required: false}
     ],
+    distinct: true,
     order: [['gid', 'DESC']]
   }).then(function(ret) {
     callback({flag: true, data: ret});
@@ -76,6 +102,13 @@ exports.getSortList = function(callback) {
     // ],
     order: [['sid', 'ASC']]
   }).then(function(ret) {
+    console.log('***********************');
+    console.log(ret);
+    console.log('--------------------------');
+    console.log(ret[0].dataValues.sortname);
+    console.log('&&&&&&&&&&&&&&&&&&&&&');
+    console.log(ret[0]);
+    console.log(ret[0].sortname);
     callback({flag: true, data: ret});
   }).catch(function(err) {
     callback({flag: false, msg: '获取列表失败'});
