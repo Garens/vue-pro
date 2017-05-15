@@ -5,3 +5,7 @@ export const addToStore = ({ commit }, article) => {
     commit(types.EDIT_ARTICLE, article);
   }
 }
+
+export const endEdit = ({ commit }) => {
+  commit(types.END_EDIT);
+}

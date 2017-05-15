@@ -69,7 +69,7 @@
     </Row>
     <Row class="write-row">
       <Col span="24" class="form-bootom">
-        <Button type="primary" @click="saveToStore">保存预览</Button>
+        <!-- <Button type="primary" @click="saveToStore">保存预览</Button> -->
         <Button type="primary" @click="saveBlog">发表文章</Button>
       </Col>
     </Row>
@@ -103,11 +103,11 @@
                 content: '',
                 sortid: 0,
                 excerpt: '',
-                allow_remark: false,
+                allow_remark: true,
                 sortop: false,
-                top: true
+                top: false
               },
-              contentValue: 'test'
+              contentValue: ''
             }
         },
         created () {
@@ -117,7 +117,6 @@
           this.$nextTick(function () {
             this.ruleValidate = validate;
             this.getSortList();
-            console.log(this.articleItem);
             this.getEditArticleData();
           });
         },
@@ -132,14 +131,22 @@
         },
         methods: {
           ...mapActions([
-            'addToStore'
+            'addToStore', 'endEdit'
           ]),
           //读取正在编辑的文章信息
           getEditArticleData () {
             if(this.articleItem) {
               this.contentValue = this.articleItem.content;
-              this.formItem = this.articleItem;
-            }            
+              this.formItem.top = (this.articleItem.top == 'y') ? true : false;
+              this.formItem.sortop = (this.articleItem.sortop == 'y') ? true : false;
+              this.formItem.allow_remark = (this.articleItem.allow_remark == 'y') ? true : false;
+              this.formItem.title = this.articleItem.title;
+              this.formItem.content = this.articleItem.content;
+              this.formItem.sortid = this.articleItem.sortid;
+              this.formItem.excerpt = this.articleItem.excerpt;
+              this.formItem.gid = this.articleItem.gid;
+
+            }
           },
           //添加标签到列表
           handleInputConfirm () {
@@ -167,9 +174,13 @@
           saveBlog () {
             this.formItem.content = this.contentValue;
             let params = {blog: this.formItem, tags: this.tagList};
-            console.log(params);
             axios.post('/api/saveBlog', params).then( ret => {
-              console.log(ret);
+              if(ret.data.flag) {
+                this.endEdit();
+                this.$router.replace({ path: '/admin/log_list' });
+              } else {
+                this.$Message.info(ret.data.msg);
+              }
             })
           },
           //获取分类列表方法
