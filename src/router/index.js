@@ -7,6 +7,7 @@ import User from '@/components/Admin/User'
 import Sort from '@/components/Admin/Sort'
 import Article from '@/components/Admin/Article'
 import Write from '@/components/Admin/Write'
+import Tag from '@/components/Admin/Tag'
 
 
 export default [
@@ -59,13 +60,19 @@ export default [
           },
           component: Article
         },
-
         {
           path: 'write_log',
           meta: {
             title: '写文章'
           },
           component: Write
+        },
+        {
+          path: 'tag',
+          meta: {
+            title: '标签管理'
+          },
+          component: Tag
         }
       ]
     }

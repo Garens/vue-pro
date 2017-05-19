@@ -1,6 +1,47 @@
 
 var gmodel = require('../model');
 
+//删除标签
+exports.delTags = function(params, callback) {
+  var ids = params.ids;
+  if(!(ids instanceof Array)) {
+    return callback({flag: false, msg: '传入数据错误'});
+  }
+  gmodel.Tag.destroy({
+    where: {
+      tid: {
+        $in: ids
+      }
+    }
+  }).then(function(ret) {
+    callback({flag: true, data: ret});
+  }).catch(function(err) {
+    console.log('ERROR4:',err);
+    callback({flag: false, msg: '数据库操作错误'});
+  })
+}
+
+//获取标签列表
+exports.getTagList = function(params, callback) {
+  var where = {};
+  if(params.id) {
+    where = {
+      gid: {
+        $like: '%,'+params.id+',%'
+      }
+    };
+  }
+  gmodel.Tag.findAll({
+    where: where,
+    order: [['tid', 'DESC']]
+  }).then(function(ret) {
+    callback({flag: true, data: ret});
+  }).catch(function(err) {
+    console.log('ERROR3:',err);
+    callback({flag: false, msg: '数据查询错误'});
+  })
+}
+
 //删除文章
 exports.delArticle = function(params, callback) {
   if(!params.gid) {

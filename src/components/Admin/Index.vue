@@ -38,7 +38,7 @@
                 <div class="layout-copy">
                     2015-2017 &copy; Garens
                     <span class="right">
-                      <a href="https://github.com/Garens/vue-pro.git" target="_blank">
+                      <a href="https://github.com/Garens/vue-pro" target="_blank">
                         <Icon type="social-github" size="25" color="#666"></Icon>
                       </a>
                     </span>
@@ -112,7 +112,7 @@
                     onOk: () => {
                         this.USER_SIGNOUT()
                         this.$Message.info('退出系统成功！');
-  				              this.$router.replace({ path: '/admin/login' })
+  				              this.$router.replace({ path: '/admin/login' });
                     },
                     onCancel: () => {
                         // this.$Message.info('点击了取消');
@@ -120,9 +120,7 @@
                 });
           },
           getList () {
-            console.log(1);
             axios.get('/api/').then( ret => {
-              console.log(ret);
               this.$router.push('/');
             })
           },

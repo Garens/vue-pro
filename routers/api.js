@@ -10,6 +10,22 @@ router.get('/', function(req, res, next) {
   res.send({ title: 'pixi.js' });
 });
 
+//删除标签
+router.post('/delTags', function(req, res) {
+  var params = req.body;
+  Article.delTags(params, function(ret) {
+    res.send(ret);
+  })
+})
+
+//获取标签列表
+router.get('/getTagList', function(req, res) {
+  var params = req.query;
+  Article.getTagList(params, function(ret) {
+    res.send(ret);
+  })
+})
+
 //保存文章
 router.post('/saveBlog', function(req, res) {
   var params = req.body;
