@@ -37,6 +37,11 @@
                 </div>
                 <div class="layout-copy">
                     2015-2017 &copy; Garens
+                    <span class="right">
+                      <a href="https://github.com/Garens/vue-pro.git" target="_blank">
+                        <Icon type="social-github" size="25" color="#666"></Icon>
+                      </a>
+                    </span>
                 </div>
             </i-col>
         </Row>
@@ -202,5 +207,16 @@
     }
     .layout-content-main {
       overflow: auto;
+    }
+    .layout-copy .right {
+      padding-right: 10%;
+      float: right;
+      transition: .3s;
+    }
+    .layout-copy .right a i {
+      transition: .3s;
+    }
+    .layout-copy .right a i:hover {
+      transform: scale(1.2);
     }
 </style>
